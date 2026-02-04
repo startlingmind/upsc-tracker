@@ -1,0 +1,23 @@
+{
+  "name": "UPSC Tracker Pro",
+  "short_name": "UPSC Pro",
+  "description": "75-Day UPSC Preparation Challenge Tracker",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/initials/svg?seed=U&backgroundColor=4f46e5",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/initials/svg?seed=U&backgroundColor=4f46e5",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

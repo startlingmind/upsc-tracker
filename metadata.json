@@ -1,0 +1,7 @@
+{
+  "name": "UPSC 75-Day Tracker Pro",
+  "description": "A high-performance UPSC preparation tracker with 75-day phase logic, daily checklists, task spillover management, and AI-powered study guidance.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
