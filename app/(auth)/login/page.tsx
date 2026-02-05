@@ -11,12 +11,8 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [showRegisterPrompt, setShowRegisterPrompt] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
   // Check if user is already logged in
   useEffect(() => {
-    setMounted(true);
-    
     setTimeout(() => {
       const user = storageService.getAuthUser();
       if (user) {
@@ -126,7 +122,7 @@ export default function LoginPage() {
           {showRegisterPrompt && (
             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-5 shadow-xl border-2 border-indigo-400 animate-pulse">
               <p className="text-white text-base font-bold mb-3 text-center">
-                🎯 Don't have an account? Create one now!
+                🎯 Don&apos;t have an account? Create one now!
               </p>
               <Link
                 href="/register"

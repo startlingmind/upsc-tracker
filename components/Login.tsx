@@ -3,9 +3,14 @@
 import React, { useState } from 'react';
 import { User } from '@/types';
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 interface LoginProps {
   onLogin: (user: User) => void;
-  deferredPrompt?: any;
+  deferredPrompt?: BeforeInstallPromptEvent;
   onInstall?: () => void;
 }
 
@@ -60,7 +65,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, deferredPrompt, onInstall }) => 
 
       // Successfully registered, now login
       onLogin(data.user);
-    } catch (err) {
+    } catch {
       setError('Network error. Please check your connection.');
       setIsLoading(false);
     }
@@ -90,7 +95,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, deferredPrompt, onInstall }) => 
 
       const data = await response.json();
       onLogin(data.user);
-    } catch (err) {
+    } catch {
       setError('Network error. Please check your connection.');
       setIsLoading(false);
     }

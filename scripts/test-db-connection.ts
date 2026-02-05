@@ -16,8 +16,6 @@ async function testConnection() {
   console.log('🔍 Testing MongoDB Connection...\n');
 
   if (!MONGO_URI) {
-    console.error('❌ ERROR: MONGO_URI not found in .env.local');
-    console.log('📝 Make sure your .env.local file exists and contains MONGO_URI');
     process.exit(1);
   }
 
@@ -35,13 +33,11 @@ async function testConnection() {
       socketTimeoutMS: 45000,
     });
 
-    console.log('✅ SUCCESS! Connected to MongoDB');
-    console.log('');
-    console.log('📊 Connection Info:');
-    console.log('   Database:', mongoose.connection.db.databaseName);
-    console.log('   Host:', mongoose.connection.host);
-    console.log('   State:', mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected');
-    console.log('');
+
+    // Check if database is available
+    if (!mongoose.connection.db) {
+      throw new Error('Database connection established but database object is undefined');
+    }
 
     // List collections
     const collections = await mongoose.connection.db.listCollections().toArray();

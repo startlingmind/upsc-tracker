@@ -21,7 +21,7 @@ const AIExpert: React.FC<AIExpertProps> = ({ day, tasks }) => {
       const taskTitles = tasks.map(t => t.title);
       const text = await geminiService.getMotivationalQuote(day, taskTitles);
       setQuote(text || "Your future self is watching you today. Don't let them down.");
-    } catch (e) {
+    } catch {
       setError(true);
     } finally {
       setLoading(false);
@@ -30,6 +30,7 @@ const AIExpert: React.FC<AIExpertProps> = ({ day, tasks }) => {
 
   useEffect(() => {
     fetchQuote();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day]);
 
   return (

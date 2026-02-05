@@ -28,7 +28,7 @@ declare global {
   var mongoose: MongooseCache | undefined;
 }
 
-let cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
 
 if (!global.mongoose) {
   global.mongoose = cached;
@@ -51,17 +51,16 @@ async function connectDB() {
       retryReads: true,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      console.log('✅ MongoDB Connected:', mongoose.connection.db.databaseName);
+    const connection =  cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       return mongoose;
-    }).catch((error) => {
-      console.error('❌ MongoDB Connection Failed:', error.message);
-      if (error.code) {
-        console.error(`   Error Code: ${error.code}`);
-      }
+    });
+
+    connection.catch((error) => {
       cached.promise = null;
       throw error;
     });
+
+    return connection;
   }
 
   try {

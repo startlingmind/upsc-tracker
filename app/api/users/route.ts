@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       message: 'User registered successfully',
     }, { status: 201 });
 
-  } catch (error: any) {
+  } catch (error :any) {
     console.error('Error in POST /api/users:', error);
     
     // Handle duplicate key error (in case of race condition)

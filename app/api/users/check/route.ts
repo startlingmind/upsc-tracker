@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       message: 'User ID is available',
     });
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error in GET /api/users/check:', error);
     // Return available: true on error so registration can proceed
     // The actual registration endpoint will do the final check

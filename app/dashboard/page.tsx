@@ -1,15 +1,19 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { UPSC_PLAN, getPhaseForDay } from '@/constants';
-import { Task, UserProgress, Session, Phase, User } from '@/types';
+import { UserProgress, Session, User } from '@/types';
 import { storageService } from '@/services/storage';
 import { apiStorageService } from '@/services/api-storage';
-import { notificationService } from '@/services/notification';
 import DayTracker from '@/components/DayTracker';
 import Stats from '@/components/Stats';
 import AIExpert from '@/components/AIExpert';
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -19,7 +23,7 @@ export default function DashboardPage() {
   const [currentViewDay, setCurrentViewDay] = useState<number>(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sessionConflict, setSessionConflict] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [mounted, setMounted] = useState(false);
 
   // Initialize on mount
@@ -45,9 +49,9 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!mounted) return;
     
-    const handleBeforeInstall = (e: any) => {
+    const handleBeforeInstall = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
@@ -82,7 +86,14 @@ export default function DashboardPage() {
     };
 
     loadUserData();
-  }, [currentUser, mounted]);
+  }, [currentUser, mounted, session]);
+
+  const handleLogout = useCallback(() => {
+    storageService.clearAuth();
+    setCurrentUser(null);
+    setSessionConflict(false);
+    router.push('/login');
+  }, [router]);
 
   // Session Heartbeat
   useEffect(() => {
@@ -101,7 +112,7 @@ export default function DashboardPage() {
     }, 15000);
 
     return () => clearInterval(interval);
-  }, [currentUser, session, mounted]);
+  }, [currentUser, session, mounted, handleLogout]);
 
   const activeDay = useMemo(() => {
     if (!progress) return 1;
@@ -112,18 +123,11 @@ export default function DashboardPage() {
     const diffTime = now.getTime() - start.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
     return Math.min(Math.max(diffDays, 1), 75);
-  }, [progress?.startDate]);
+  }, [progress]);
 
   useEffect(() => {
     if (activeDay) setCurrentViewDay(activeDay);
   }, [activeDay]);
-
-  const handleLogout = () => {
-    storageService.clearAuth();
-    setCurrentUser(null);
-    setSessionConflict(false);
-    router.push('/login');
-  };
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;

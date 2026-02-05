@@ -15,12 +15,8 @@ export default function RegisterPage() {
     available: boolean;
     message: string;
   } | null>(null);
-  const [mounted, setMounted] = useState(false);
-
   // Check if user is already logged in
   useEffect(() => {
-    setMounted(true);
-    
     setTimeout(() => {
       const user = storageService.getAuthUser();
       if (user) {
@@ -237,7 +233,7 @@ export default function RegisterPage() {
 
           <button 
             type="submit"
-            disabled={isLoading || !userIdInput.trim() || isChecking || (availability && !availability.available)}
+            disabled={isLoading || !userIdInput.trim() || isChecking || (availability !== null && !availability.available)}
             className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
